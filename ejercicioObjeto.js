@@ -215,7 +215,6 @@ function esperar(tiempo){
 }
 
 function final(params) {
-    let params
     function iterarobjeto(params) {
         for (const key in params) {
             const value = params[key];
@@ -233,30 +232,40 @@ function final(params) {
     }
 }
 
-
-async function main(){
+async function main() {
     try {
-        Promise.all([
-            await imprimirMensaje(`¡Empecemos a hacer un arroz muy especial!\n ...`),await esperar(3),
-            await lavarArroz(), await esperar(2),
-            await hervirArroz(), await esperar (2),
-            await imprimirMensaje(`Procesos completos para empezar a empezar con los condimentos...`), await esperar(3),
-            await picarCondimentos(), await esperar(2),
-            await imprimirMensaje(`Empezando con la sartén...`), await esperar(3),
-            await calentarSarten(), await esperar(2),
-            await agregarAceite(), await esperar(2),
-            await imprimirMensaje(`Es el momento de agregar nuestro arroz lavado...`),await(3),
-            await freirArroz(),await esperar(2),
-            await agregarCondimentos(),await esperar(2),
-            await agregarAgua(), await esperar(2),
-            await mezclar(),await esperar(2),
-            await coccion(), await esperar(3),
-        ])  
-
+        await imprimirMensaje(`¡Empecemos a hacer un arroz muy especial!\n ...`);
+        await esperar(3);
+        await lavarArroz();
+        await esperar(2);
+        await hervirArroz();
+        await esperar(2);
+        await imprimirMensaje(`Procesos completos para empezar a empezar con los condimentos...`);
+        await esperar(3);
+        await picarCondimentos();
+        await esperar(2);
+        await imprimirMensaje(`Empezando con la sartén...`);
+        await esperar(3);
+        await calentarSarten();
+        await esperar(2);
+        await agregarAceite();
+        await esperar(2);
+        await imprimirMensaje(`Es el momento de agregar nuestro arroz lavado...`);
+        await esperar(3);
+        await freirArroz();
+        await esperar(2);
+        await agregarCondimentos();
+        await esperar(2);
+        await agregarAgua();
+        await esperar(2);
+        await mezclar();
+        await esperar(2);
+        await coccion();
+        await esperar(3);
+    } catch (err) {
+        console.error(err);
+    } finally {
         final(recipe);
-    }
-    catch(err) {
-        console.error(err)
     }
 }
 
