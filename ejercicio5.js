@@ -411,7 +411,52 @@ async function handler(req, res) {
                             });
                         }
                         break;
-
+                        case 'baja':
+                          {
+                            req
+                              .on('data', (chunk) => {
+                                try {
+                                  body.push(chunk); // Cada chunk de datos recibidos se agrega a un array llamado 'body'.
+                                } catch (err) {
+                                  // En caso de error un 500 (erorr del servidor) y terminamos la operación.
+                                  res.statusCode = 500;
+                                  res.setHeader('Content-Type', 'application/json');
+                                  res.end(`{ "mensaje": "Ocurrió un problema al leer los datos de la solicitud" }`);
+                                }
+                              })
+                              // Cuando recibe el evento 'end' significa que se han recibido todos los datos. En este punto el servidor ya tiene todos los datos del cuerpo de la solicitud POST. Usa req.on para esuchar este evento.
+                              .on('end', async () => {
+                                try {
+                                  // Concatena todos los chunks de datos recibidos utilizando buffer.concat() luego lo conviente en una cadena de texto con toString()
+                                  body = Buffer.concat(body).toString();
+                                  // Intenta analizar la cadena para crear un objeto usando JSON. parse
+                                  body = JSON.parse(body);
+  
+                                  /**
+                                   * @param {function} result Ejecuta una función async (create) que contiene información sobre el resultado de la operación. Código de estado, mensaje de texto de error u éxito y demás datos relevantes.
+                                   */
+                                  const result = await internship.down({ json, body, id, fileName });
+  
+                                  res.statusCode = result.code; // Código de respuesta recibido de nuestro objeto result.
+                                  res.setHeader('Content-Type', 'application/json');
+                                  res.end(`{ "mensaje": "${result.message}" }`); // Objeto que regresamos. Con éxito o fallo de la ejecución de nuestra función
+                                } catch (err) {
+                                  console.log(err);
+                                  res.statusCode = 500;
+                                  res.setHeader('Content-Type', 'application/json');
+                                  res.end(`{ "mensaje": "Ocurrió un problema al obtener los datos de la solicitud" }`);
+                                }
+                              })
+                              .on('error', (err) => {
+                                // Maneja el evento de 'error' se estable el código en 500 y se envia mensaje de erorr.
+                                console.log(err);
+                                res.statusCode = 500;
+                                res.setHeader('Content-Type', 'application/json');
+                                res.end(`{ "mensaje": "Ocurrió un problema al procesar la solicitud" }`);
+                              });
+                          }
+                          break;
+  
                       default:
                         res.statusCode = 202;
                         res.setHeader('Content-Type', 'application/json');
